@@ -29,7 +29,6 @@ public class surveyBot extends TelegramLongPollingBot {
     }
 
     public String getBotToken() {
-        //return "6957061792:AAEop0IlgEq5JeI1QkswZj8WLclAs8mlU7o";
         return botConfig.getBotToken();
     }
 
