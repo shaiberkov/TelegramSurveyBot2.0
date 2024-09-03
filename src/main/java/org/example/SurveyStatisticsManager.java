@@ -40,24 +40,6 @@ public class SurveyStatisticsManager {
                     }
                 }
             }
-//    private synchronized void  checkIfEnoughTimePassedToGatherStatistics() {
-//        new Thread(()->{
-//            while (true) {
-//                synchronized (lock) {
-//                    LocalDateTime now = LocalDateTime;
-//                    //LocalDateTime pollSentTime = this.communityManager.getSurveyCreatorManager().getTimePollSentOut();
-//                    if(pollSentTime != null) {
-//                        if( Duration.between(pollSentTime, LocalDateTime.now()).toMinutes()>= Constants.MINUTES_TO_WAIT_TO_SEND_STATS){
-//                            sendStatisticsToCreator();
-//                            resetStatistics();
-//                            ActiveSurveyManager.getInstance().endSurvey();
-//                            this.communityManager.getSurveyCreatorManager().setTimePollSentOutNull();
-//                        }
-//                    }
-//                }
-//            }
-
-
         }).start();
     }
 
