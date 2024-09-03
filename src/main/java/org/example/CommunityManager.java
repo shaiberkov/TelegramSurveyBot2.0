@@ -9,10 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 @Getter
 public class CommunityManager {
-    private List<Observer> observers = new ArrayList<>();
-    private SurveyCreatorManager surveyCreatorManager = new SurveyCreatorManager(this);
+    private List<Observer> observers;
+    private SurveyCreatorManager surveyCreatorManager;
 
-    public void addObserver(User user, String messageText, TelegramLongPollingBot bot) {
+    public CommunityManager() {
+        this.observers = new ArrayList<>();
+        this.surveyCreatorManager = new SurveyCreatorManager(this);
+    }
+
+    private void addNewObserver(User user,TelegramLongPollingBot bot) {
+        this.observers.add(user);
+        this.newUserJoined(user);
+        Utils.sendMessageToUser(user.getChatId(), "הצטרפת בהצלחה," + " הקהילה מונה "+observers.size()+" חברים", bot);
+        Utils.sendMessageToUser(user.getChatId(), "אם אתה מעוניין ליצור סקר חדש תרשום 'סקר חדש'", bot);
+
+    }
+    public void processNewUser(User user, String messageText, TelegramLongPollingBot bot) {
         if (messageText.equalsIgnoreCase("הי") || messageText.equalsIgnoreCase("hi")) {
             if (!this.observers.contains(user)) {
                 addNewObserver(user, bot);
