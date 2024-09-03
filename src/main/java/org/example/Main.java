@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class  Main {
+
+    String l="k";
     public static void main(String[] args) {
         try {
             TelegramBotsApi telegramBotsApi=new TelegramBotsApi(DefaultBotSession.class);
