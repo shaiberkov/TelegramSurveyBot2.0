@@ -50,7 +50,7 @@ public class CommunityManager {
         }
     }
     private void newUserJoined (User newUser){
-        String message = "יוזר " + newUser.getUsername() + " הצטרף לקהילת הסקרים " +
+        String message = "יוזר " + newUser.getUsername()  + " הצטרף לקהילת הסקרים " +
                 "הקהילה מונה "+observers.size()+" חברים";
         notifyObservers(message);
     }
