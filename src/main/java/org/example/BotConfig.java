@@ -8,6 +8,9 @@ public class BotConfig {
     private String botToken;
 
     public BotConfig() {
+      loadBotToken();
+    }
+    public void loadBotToken(){
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
@@ -15,7 +18,7 @@ public class BotConfig {
                 return;
             }
             properties.load(input);
-            botToken = properties.getProperty("BOT_TOKEN");
+            this.botToken = properties.getProperty("BOT_TOKEN");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

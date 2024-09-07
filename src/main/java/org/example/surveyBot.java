@@ -27,7 +27,7 @@ public class surveyBot extends TelegramLongPollingBot {
     public String getBotUsername() {
         return "Shai2024";
     }
-
+    //return your bot token instead
     public String getBotToken() {
         return botConfig.getBotToken();
     }

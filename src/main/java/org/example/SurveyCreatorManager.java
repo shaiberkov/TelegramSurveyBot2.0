@@ -193,9 +193,11 @@ private SendPoll pollCreation(SendPoll pollTemplate,Observer observer){
     public void setTimePollSentOutNull(){
         this.timePollSentOut=null;
     }
+
     public SurveyDetails getSurveyDetailsByPollId(String pollId) {
         return this.pollsMap.get(pollId);
     }
+
     public boolean checkIfEnoughTimePassed(LocalDateTime localDateTime){
         boolean enoughTimePassed = false;
         if (this.timePollSentOut!= null) {
