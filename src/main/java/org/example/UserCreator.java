@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
     private Long chatId;
     private TelegramLongPollingBot bot;
 
-
+    //Add logic as needed
     public User buildUser (){
         return new User(this.username, this.chatId, this.bot);
     }
