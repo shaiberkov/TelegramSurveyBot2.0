@@ -44,7 +44,7 @@ public class surveyBot extends TelegramLongPollingBot {
             Long chatId = update.getMessage().getChatId();
             String firstName = update.getMessage().getFrom().getFirstName();
             String lastName = update.getMessage().getFrom().getLastName();
-            String username = update.getMessage().getFrom().getFirstName()+" "+update.getMessage().getFrom().getLastName();
+            String username = firstName+" "+lastName;
             User user = new UserCreator(username, chatId, this).buildUser();
             this.communityManager.processNewUser(user, messageText, this);
         }
