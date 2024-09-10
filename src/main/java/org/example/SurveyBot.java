@@ -1,22 +1,15 @@
 package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.polls.Poll;
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
-import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-public class surveyBot extends TelegramLongPollingBot {
+public class SurveyBot extends TelegramLongPollingBot {
     private CommunityManager communityManager;
     private SurveyCreatorManager surveyCreatorManager;
     private SurveyStatisticsManager surveyStatisticsManager;
     private BotConfig botConfig;
-    public surveyBot() {
+    public SurveyBot() {
         this.botConfig = new BotConfig();
         this.communityManager = new CommunityManager();
         this.surveyCreatorManager = new SurveyCreatorManager(communityManager);
