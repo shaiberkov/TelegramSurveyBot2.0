@@ -18,6 +18,7 @@ public class SurveyStatisticsManager {
     private static Object lock = new Object();
 
 
+
     public SurveyStatisticsManager(Map<String, SurveyDetails> pollsMap, CommunityManager communityManager) {
         this.surveyResponsesMap=new HashMap<>();
         this.userResponsesMap=new HashMap<>();
@@ -72,6 +73,7 @@ public class SurveyStatisticsManager {
             sendStatisticsToCreator();
             resetStatistics();
             ActiveSurveyManager.getInstance().endSurvey();
+
         }
     }
 
@@ -91,46 +93,65 @@ public class SurveyStatisticsManager {
         }
         return this.userResponsesMap.size() >= totalObservers;
     }
-    private void sendStatisticsToCreator() {
-        Long currentActiveSurveyManagerId=ActiveSurveyManager.getInstance().getActiveUser().getChatId();
-        TelegramLongPollingBot currentActiveSurveyManagerBot=ActiveSurveyManager.getInstance().getActiveUser().getBot();
-        Set<String> processedQuestions = new HashSet<>(); // סט לשמירת השאלות שכבר עיבדנו
-        // לולאה על כל השאלות במפת הסקרים
-        for (String pollId : this.pollsMap.keySet()) {
-            SurveyDetails surveyDetails = this.pollsMap.get(pollId);
-            String question = surveyDetails.getQuestion();
-            Map<String, Integer> responses = this.surveyResponsesMap.get(question);
-            if (responses == null || responses.isEmpty()) {
-                Utils.sendMessageToUser(currentActiveSurveyManagerId
-                        ,"אף אחד לא ענה על השאלה: " + question
-                            ,currentActiveSurveyManagerBot);
-                                continue; // מדלג על השאלה אם אין תגובות שנרשמו
+
+private void sendStatisticsToCreator() {
+    Long currentActiveSurveyManagerId = ActiveSurveyManager.getInstance().getActiveUser().getChatId();
+    TelegramLongPollingBot currentActiveSurveyManagerBot = ActiveSurveyManager.getInstance().getActiveUser().getBot();
+    Set<String> processedQuestions = new HashSet<>();
+    StringBuilder fullStatisticsMessage = new StringBuilder();
+    List<String> statisticsMessages=new ArrayList<>();
+
+    for (String pollId : this.pollsMap.keySet()) {
+        SurveyDetails surveyDetails = this.pollsMap.get(pollId);
+        String question = surveyDetails.getQuestion();
+        Map<String, Integer> responses = this.surveyResponsesMap.get(question);
+        if (responses == null || responses.isEmpty()) {
+            if (!processedQuestions.contains("noResponse-" + question)) {
+                fullStatisticsMessage.append("אף אחד לא ענה על השאלה: ").append(question).append("\n");
+                processedQuestions.add("noResponse-" + question);
             }
-            int totalResponses = totalResponses(responses);
-            String statisticsMessage=statisticsMessageBuilder(surveyDetails,responses,totalResponses);
-            try {
-                Utils.sendMessageToUser(currentActiveSurveyManagerId, statisticsMessage, currentActiveSurveyManagerBot);
-                this.statisticsSentCount++;
-                processedQuestions.add(question);// הוספת השאלה לסט כדי למנוע עיבוד חוזר
-            } catch (Exception e) {
-                System.out.println("Error occurred while sending message:");
-                e.printStackTrace();
-            }
+            processedQuestions.add(question);
+            continue;
+        }
+        int totalResponses = totalResponses(responses);
+        String statisticsMessage = statisticsMessageBuilder(surveyDetails, responses, totalResponses);
+        statisticsMessages.add(statisticsMessage);
+        if(!processedQuestions.contains(question)) {
+            fullStatisticsMessage.append(statisticsMessage).append("\n");
+            processedQuestions.add(question);
         }
     }
+    if (fullStatisticsMessage.length() > 0) {
+        try {
+            Utils.sendMessageToUser(currentActiveSurveyManagerId, fullStatisticsMessage.toString(), currentActiveSurveyManagerBot);
+            this.statisticsSentCount++;
+        } catch (Exception e) {
+            System.out.println("Error occurred while sending message:");
+            e.printStackTrace();
+        }
+    }
+}
+
     private int totalResponses(Map<String, Integer> responses){
         return responses.values().stream().mapToInt(Integer::intValue).sum();
     }
-    private String statisticsMessageBuilder(SurveyDetails surveyDetails,Map<String, Integer> responses,int totalResponses){
-        StringBuilder statisticsMessage = new StringBuilder("תוצאות עבור שאלה: " + surveyDetails.getQuestion() +
-                "\n"+"סך תשובות שניקלטו:"+totalResponses+"\n");
-        for (String option : surveyDetails.getOptions()) {
-            int count = responses.getOrDefault(option, 0);
-            double percentage = (count / (double) totalResponses) * 100;
-            statisticsMessage.append(String.format("%s: %.2f%%\n", option, percentage));
-        }
-        return statisticsMessage.toString();
+
+private String statisticsMessageBuilder(SurveyDetails surveyDetails, Map<String, Integer> responses, int totalResponses) {
+    StringBuilder statisticsMessage = new StringBuilder("תוצאות עבור שאלה: " + surveyDetails.getQuestion() +
+            "\n" + "סך תשובות שניקלטו: " + totalResponses + "\n");
+    List<Map.Entry<String, Double>> optionsWithPercentages = new ArrayList<>();
+    for (String option : surveyDetails.getOptions()) {
+        int count = responses.getOrDefault(option, 0);
+        double percentage = (totalResponses > 0) ? (count / (double) totalResponses) * 100 : 0.0;
+        optionsWithPercentages.add(new AbstractMap.SimpleEntry<>(option, percentage));
     }
+    optionsWithPercentages.sort((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()));
+    optionsWithPercentages.forEach(entry -> {
+        statisticsMessage.append(String.format("%s: %.2f%%\n", entry.getKey(), entry.getValue()));
+    });
+    return statisticsMessage.toString();
+}
+
     private void resetStatistics() {
         this.surveyResponsesMap.clear();
         this.userResponsesMap.clear();

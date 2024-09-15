@@ -39,7 +39,7 @@ public class SurveyCreatorManager {
 
     public void handleUserMessage(User user, String messageText, TelegramLongPollingBot bot) {
         if (this.waitingForSurveyToSend && messageText.equalsIgnoreCase("סקר חדש")) {
-            Utils.sendMessageToUser(user.getChatId(), "אנא המתן, הסקר נמצא בעיבוד. לא ניתן ליצור סקר חדש עד שליחת הסקר הנוכחי.", bot);
+            Utils.sendMessageToUser(user.getChatId(), "אנא המתן, ישנו סקר הנמצא כרגע בעיבוד. לא ניתן ליצור סקר חדש עד שליחת הסקר הנוכחי.", bot);
             return;
         }
         if (this.waitingForDelay&&this.activeSurveyManager.getActiveUser().equals(user)) {
