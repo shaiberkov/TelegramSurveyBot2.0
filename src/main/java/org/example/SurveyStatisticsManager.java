@@ -14,7 +14,6 @@ public class SurveyStatisticsManager {
     private Map<Long, Set<String>> userResponsesMap;
     private Map<String, SurveyDetails> pollsMap;
     private CommunityManager communityManager;
-    private int statisticsSentCount;
     private static Object lock = new Object();
 
 
@@ -24,7 +23,6 @@ public class SurveyStatisticsManager {
         this.userResponsesMap=new HashMap<>();
         this.pollsMap = pollsMap;
         this.communityManager = communityManager;
-        this.statisticsSentCount=0;
         printAllMaps();
         checkIfEnoughTimePassedToGatherStatistics();
     }
@@ -124,7 +122,6 @@ private void sendStatisticsToCreator() {
     if (fullStatisticsMessage.length() > 0) {
         try {
             Utils.sendMessageToUser(currentActiveSurveyManagerId, fullStatisticsMessage.toString(), currentActiveSurveyManagerBot);
-            this.statisticsSentCount++;
         } catch (Exception e) {
             System.out.println("Error occurred while sending message:");
             e.printStackTrace();
@@ -156,6 +153,5 @@ private String statisticsMessageBuilder(SurveyDetails surveyDetails, Map<String,
         this.surveyResponsesMap.clear();
         this.userResponsesMap.clear();
         this.pollsMap.clear();
-        this.statisticsSentCount = 0;
     }
 }
