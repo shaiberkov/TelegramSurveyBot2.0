@@ -1,15 +1,11 @@
 package org.example;
 
+import lombok.AllArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
+@AllArgsConstructor
 public class TextUpdateHandler implements UpdateHandler {
     private CommunityManager communityManager;
     private SurveyBot bot;
-
-    public TextUpdateHandler(CommunityManager communityManager, SurveyBot bot) {
-        this.communityManager = communityManager;
-        this.bot = bot;
-    }
 
     @Override
     public void handleUpdate(Update update) {

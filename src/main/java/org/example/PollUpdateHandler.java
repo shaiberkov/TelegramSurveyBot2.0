@@ -1,16 +1,12 @@
 package org.example;
 
+import lombok.AllArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
-
+@AllArgsConstructor
 public class PollUpdateHandler implements UpdateHandler {
     private SurveyCreatorManager surveyCreatorManager;
     private SurveyStatisticsManager surveyStatisticsManager;
-
-    public PollUpdateHandler(SurveyCreatorManager surveyCreatorManager, SurveyStatisticsManager surveyStatisticsManager) {
-        this.surveyCreatorManager = surveyCreatorManager;
-        this.surveyStatisticsManager = surveyStatisticsManager;
-    }
 
     @Override
     public void handleUpdate(Update update) {

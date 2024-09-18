@@ -4,12 +4,9 @@ package org.example;
 import lombok.Getter;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -162,7 +159,7 @@ private SendPoll pollCreation(SendPoll pollTemplate,Observer observer){
     private void notifyObserversAboutSurveys(TelegramLongPollingBot bot) {
         for (SendPoll pollTemplate : this.createdSurveys) {
             for (Observer observer : this.communityManager.getObservers()) {
-                if (!observer.equals(this.activeSurveyManager.getActiveUser())) {  // בדיקה שהמשתמש הפעיל אינו מקבל את הסקר
+                if (!observer.equals(this.activeSurveyManager.getActiveUser())) {
                     SendPoll poll=pollCreation(pollTemplate, observer);
                     try {
                         Message message = bot.execute(poll);

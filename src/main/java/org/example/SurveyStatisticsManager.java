@@ -1,11 +1,5 @@
 package org.example;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,7 +17,6 @@ public class SurveyStatisticsManager {
         this.userResponsesMap=new HashMap<>();
         this.pollsMap = pollsMap;
         this.communityManager = communityManager;
-        printAllMaps();
         checkIfEnoughTimePassedToGatherStatistics();
     }
     private synchronized void  checkIfEnoughTimePassedToGatherStatistics() {
@@ -42,22 +35,6 @@ public class SurveyStatisticsManager {
         }).start();
     }
 
-        private synchronized void  printAllMaps(){
-        new Thread(()->{
-            while (true){
-                synchronized (lock) {
-                    System.out.println("surveyResponsesMap: " + this.surveyResponsesMap);
-                    System.out.println("userResponsesMap: " + this.userResponsesMap);
-                    System.out.println("pollsMap: " + this.pollsMap);
-                    System.out.println("#####################################################################");
-                }try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-    }
 
     public void recordAnswer(String question, String option, Long userId) {
         this.surveyResponsesMap.putIfAbsent(question, new HashMap<>());
