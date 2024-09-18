@@ -4,11 +4,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class TextUpdateHandler implements UpdateHandler {
     private CommunityManager communityManager;
-    private SurveyBot bot; // הוספת הבוט
+    private SurveyBot bot;
 
     public TextUpdateHandler(CommunityManager communityManager, SurveyBot bot) {
         this.communityManager = communityManager;
-        this.bot = bot; // שמירת הבוט כפרמטר של המחלקה
+        this.bot = bot;
     }
 
     @Override
@@ -18,7 +18,7 @@ public class TextUpdateHandler implements UpdateHandler {
         String firstName = update.getMessage().getFrom().getFirstName();
         String lastName = update.getMessage().getFrom().getLastName();
         String username = firstName + " " + lastName;
-        User user = new UserCreator(username, chatId, bot).buildUser(); // העברת הבוט ל-UserCreator
-        this.communityManager.processNewUser(user, messageText, bot); // העברת הבוט ל-processNewUser
+        User user = new UserCreator(username, chatId, this.bot).buildUser();
+        this.communityManager.processNewUser(user, messageText, this.bot);
     }
 }

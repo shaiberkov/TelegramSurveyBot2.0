@@ -17,9 +17,9 @@ public class UpdateHandlerFactory {
 
     public UpdateHandler getHandler(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            return new TextUpdateHandler(communityManager, bot);
+            return new TextUpdateHandler(this.communityManager, this.bot);
         } else if (update.hasPollAnswer()) {
-            return new PollUpdateHandler(surveyCreatorManager, surveyStatisticsManager);
+            return new PollUpdateHandler(this.surveyCreatorManager, this.surveyStatisticsManager);
         }
         return null;
     }
