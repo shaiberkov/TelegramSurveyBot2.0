@@ -8,12 +8,14 @@ public class SurveyBot extends TelegramLongPollingBot {
     private CommunityManager communityManager;
     private SurveyCreatorManager surveyCreatorManager;
     private SurveyStatisticsManager surveyStatisticsManager;
+    private UpdateHandlerFactory handlerFactory;
     private BotConfig botConfig;
     public SurveyBot() {
         this.botConfig = new BotConfig();
         this.communityManager = new CommunityManager();
         this.surveyCreatorManager = new SurveyCreatorManager(communityManager);
         this.surveyStatisticsManager = new SurveyStatisticsManager(surveyCreatorManager.getPollsMap(), communityManager);
+        this.handlerFactory = new UpdateHandlerFactory(communityManager, surveyCreatorManager, surveyStatisticsManager, this);
     }
 
     @Override
@@ -27,47 +29,15 @@ public class SurveyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        handlingTextResponses(update);
-        handlingSurveyResponses(update);
+     processUpdate(update);
     }
 
-    private void handlingTextResponses(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
-            String firstName = update.getMessage().getFrom().getFirstName();
-            String lastName = update.getMessage().getFrom().getLastName();
-            String username = firstName+" "+lastName;
-            User user = new UserCreator(username, chatId, this).buildUser();
-            this.communityManager.processNewUser(user, messageText, this);
-        }
-    }
-
-    private void handlingSurveyResponses(Update update) {
-        if (update.hasPollAnswer()) {
-            PollAnswer pollAnswer = update.getPollAnswer();
-            String pollId = pollAnswer.getPollId();
-            SurveyDetails surveyDetails = this.surveyCreatorManager.getSurveyDetailsByPollId(pollId);
-            if (surveyDetails != null) {
-                Integer selectedOptionId = pollAnswer.getOptionIds().get(0);
-                String selectedOption = surveyDetails.getOptions().get(selectedOptionId);
-                Long userID = pollAnswer.getUser().getId();
-                String question = surveyDetails.getQuestion();
-                this.surveyStatisticsManager.recordAnswer(question, selectedOption, userID);
-            } else {
-                System.out.println("Poll not found for ID: " + pollId);
-            }
+    private void processUpdate(Update update) {
+        UpdateHandler handler = handlerFactory.getHandler(update);
+        if (handler != null) {
+            handler.handleUpdate(update);
+        } else {
+            System.out.println("No handler found for the given update.");
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
