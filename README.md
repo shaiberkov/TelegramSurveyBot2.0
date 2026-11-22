@@ -138,13 +138,6 @@ All limits live in `Constants.java`:
 | `MIN_OBSERVER_COUNT_FOR_SURVEY_CREATION` | 3 | Members needed before a survey can start |
 | `MINUTES_TO_WAIT_TO_SEND_STATS` | 5 | Time window before results are sent |
 
-## 🗺️ Roadmap
-
-- [ ] Replace busy-wait threads with a `ScheduledExecutorService`
-- [ ] Persist communities and results in a database
-- [ ] Results as a chart image
-- [ ] Multiple communities per bot
-
 ## 👤 Author
 
 **Shai Berkovich** — B.Sc. Computer Science
